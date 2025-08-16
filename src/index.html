@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Art Auctions - Artify Auctions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- General Styling & Variables --- */
+        :root {
+            --primary-color: #3a506b;
+            --secondary-color: #6c757d;
+            --accent-color: #e5989b;
+            --light-color: #f8f9fa;
+            --dark-color: #1c2541;
+            --font-primary: 'Playfair Display', serif;
+            --font-secondary: 'Roboto', sans-serif;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            line-height: 1.7;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        /* --- Reusable Components --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border: 1px solid transparent;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: var(--dark-color);
+            transform: translateY(-3px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        /* --- Header & Navigation Bar --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 2rem;
+            background: #fff;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: var(--font-primary);
+            font-size: 2rem;
+            color: var(--dark-color);
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 0.5rem;
+        }
+
+        .nav-links a {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links .active a {
+            color: var(--dark-color);
+        }
+
+        .nav-auth .btn { margin-left: 0.5rem; }
+        
+        /* --- Page Header Section --- */
+        .page-header {
+            background: linear-gradient(rgba(28, 37, 65, 0.7), rgba(28, 37, 65, 0.7)), url('https://picsum.photos/seed/digitalart/1800/600') no-repeat center center/cover;
+            color: #fff;
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-primary);
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+        
+        /* --- Category Page Content --- */
+        .category-section {
+            padding: 5rem 0;
+        }
+        
+        /* --- Filter & Search Bar --- */
+        .filters {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            display: flex;
+            min-width: 250px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #ccc;
+            border-radius: 50px 0 0 50px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background-color: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+            border-radius: 0 50px 50px 0;
+            transition: background-color 0.3s;
+        }
+        .search-bar button:hover {
+            background-color: var(--dark-color);
+        }
+        
+        .filter-dropdown select {
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            font-size: 1rem;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        /* --- Auction Grid (Reused from Homepage) --- */
+        .auction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .auction-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auction-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .auction-card:hover .card-img img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            font-family: var(--font-primary);
+            font-size: 1.6rem;
+        }
+        
+        .card-content .artist {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .bid-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 1rem 0;
+            font-size: 1rem;
+        }
+        
+        .bid-info .label {
+            color: var(--secondary-color);
+        }
+
+        .bid-info .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .timer {
+            background-color: #f1f1f1;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .timer-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--secondary-color);
+        }
+        
+        .timer-value {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .card-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+
+        .card-footer .btn {
+            width: 100%;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--dark-color);
+            color: #ccc;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-primary);
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 0.8rem; }
+        .footer-col a { color: #ccc; text-decoration: none; transition: color 0.3s ease; }
+        .footer-col a:hover { color: var(--accent-color); }
+        .footer-socials a { font-size: 1.5rem; margin-right: 1rem; }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5rem; }
+            .filters { flex-direction: column; align-items: stretch;}
+        }
+        
+        @media (max-width: 576px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">Artify Auctions</div>
+            
+            <div class="nav-center">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#featured">Auctions</a></li>
+                    <li class="active"><a href="index.html#categories">Categories</a></li>
+                    <li><a href="artists.html">Artists</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-auth">
+                <a href="#" class="btn btn-secondary">Login</a>
+                <a href="#" class="btn btn-primary">Register</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Digital Art</h1>
+                <p>
+                    Explore the future of creativity. This collection features everything from 
+                    AI-generated masterpieces and intricate 3D models to pixel-perfect illustrations.
+                </p>
+            </div>
+        </section>
+
+        <section class="category-section">
+            <div class="container">
+                <div class="filters">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search within Digital Art...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select>
+                            <option value="">All Sub-Categories</option>
+                            <option value="ai">AI-Generated</option>
+                            <option value="3d">3D Modeling</option>
+                            <option value="illustrator">Illustration</option>
+                            <option value="pixel">Pixel Art</option>
+                        </select>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select>
+                            <option value="">Sort By</option>
+                            <option value="ending-soon">Ending Soon</option>
+                            <option value="newly-listed">Newly Listed</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="price-low">Price: Low to High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="auction-grid">
+                    <div class="auction-card">
+                        <div class="card-img">
+                           <img src="https://picsum.photos/seed/digital3/600/400" alt="Digital Art">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title">Neon Dystopia #7</h3>
+                            <p class="artist">by Unit 731</p>
+                            <div class="bid-info">
+                                <span class="label">Current Bid</span>
+                                <span class="price">$1,150</span>
+                            </div>
+                            <div class="timer" data-end-time="2025-08-08T22:00:00Z">
+                                <div class="timer-label">Auction Ends In</div>
+                                <div class="timer-value">Loading...</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary">Place Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="auction-card">
+                        <div class="card-img">
+                           <img src="https://picsum.photos/seed/digital4/600/400" alt="3D Render">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title">Crystalline Forms</h3>
+                            <p class="artist">by Ava Nguyen</p>
+                            <div class="bid-info">
+                                <span class="label">Starting Bid</span>
+                                <span class="price">$800</span>
+                            </div>
+                            <div class="timer" data-end-time="2025-08-09T20:00:00Z">
+                                <div class="timer-label">Auction Ends In</div>
+                                <div class="timer-value">Loading...</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary">Place Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="auction-card">
+                        <div class="card-img">
+                           <img src="https://picsum.photos/seed/digital5/600/400" alt="AI Art">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title">The Android's Dream</h3>
+                            <p class="artist">by The Oracle AI</p>
+                            <div class="bid-info">
+                                <span class="label">Current Bid</span>
+                                <span class="price">$3,200</span>
+                            </div>
+                            <div class="timer" data-end-time="2025-08-11T19:30:00Z">
+                                <div class="timer-label">Auction Ends In</div>
+                                <div class="timer-value">Loading...</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary">Place Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="auction-card">
+                        <div class="card-img">
+                           <img src="https://picsum.photos/seed/pixelart1/600/400" alt="Pixel Art">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title">8-Bit Sunset</h3>
+                            <p class="artist">by RetroGrade</p>
+                            <div class="bid-info">
+                                <span class="label">Current Bid</span>
+                                <span class="price">$450</span>
+                            </div>
+                            <div class="timer" data-end-time="2025-08-15T23:00:00Z">
+                                <div class="timer-label">Auction Ends In</div>
+                                <div class="timer-value">Loading...</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary">Place Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="auction-card">
+                        <div class="card-img">
+                           <img src="https://picsum.photos/seed/fractal1/600/400" alt="Fractal Art">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title">Infinite Recursion</h3>
+                            <p class="artist">by Unit 731</p>
+                            <div class="bid-info">
+                                <span class="label">Reserve Not Met</span>
+                                <span class="price">$950</span>
+                            </div>
+                            <div class="timer" data-end-time="2025-08-18T12:00:00Z">
+                                <div class="timer-label">Auction Ends In</div>
+                                <div class="timer-value">Loading...</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary">Place Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="auction-card">
+                        <div class="card-img">
+                           <img src="https://picsum.photos/seed/illustration2/600/400" alt="Digital Illustration">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title">Forest Spirit</h3>
+                            <p class="artist">by Ava Nguyen</p>
+                            <div class="bid-info">
+                                <span class="label">Current Bid</span>
+                                <span class="price">$1,500</span>
+                            </div>
+                            <div class="timer" data-end-time="2025-08-20T21:00:00Z">
+                                <div class="timer-label">Auction Ends In</div>
+                                <div class="timer-value">Loading...</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary">Place Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Artify Auctions</h4>
+                    [cite_start]<p>The modern web-based auction platform designed for artists, collectors, and art lovers. [cite: 21]</p>
+                </div>
+                <div class="footer-col">
+                    <h4>For Buyers</h4>
+                    <ul>
+                        <li><a href="#">How to Bid</a></li>
+                        <li><a href="#">Track My Bids</a></li>
+                        [cite_start]<li><a href="#">Payment Information</a> [cite: 39]</li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>For Sellers</h4>
+                    <ul>
+                        [cite_start]<li><a href="#">How to Sell</a> [cite: 32]</li>
+                        <li><a href="#">Create a Listing</a></li>
+                        <li><a href="#">Pricing & Fees</a></li>
+                        <li><a href="#">Seller Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect With Us</h4>
+                     <p>Stay updated with our latest auctions and news.</p>
+                     <div class="footer-socials">
+                         <a href="#"><i class="fab fa-twitter"></i></a>
+                         <a href="#"><i class="fab fa-instagram"></i></a>
+                         <a href="#"><i class="fab fa-facebook-f"></i></a>
+                     </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Artify Auctions. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Countdown Timer Logic ---
+            const timerElements = document.querySelectorAll('.timer');
+
+            function updateTimers() {
+                const now = new Date().getTime();
+
+                timerElements.forEach(timer => {
+                    const endTime = new Date(timer.dataset.endTime).getTime();
+                    const distance = endTime - now;
+                    const valueEl = timer.querySelector('.timer-value');
+
+                    if (distance < 0) {
+                        valueEl.innerHTML = "AUCTION ENDED";
+                        const button = timer.closest('.auction-card').querySelector('.btn');
+                        if (button) {
+                            button.disabled = true;
+                            button.innerText = 'Auction Ended';
+                            button.style.backgroundColor = 'var(--secondary-color)';
+                        }
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    valueEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                });
+            }
+
+            if (timerElements.length > 0) {
+                updateTimers(); // Initial call
+                setInterval(updateTimers, 1000); // Update every second
+            }
+        });
+    </script>
+
+</body>
+</html>
