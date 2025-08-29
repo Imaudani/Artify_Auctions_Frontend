@@ -9,6 +9,7 @@ export default function Navbar() {
         <li><a href="#categories" className="text-gray-900 font-semibold">Categories</a></li>
         <li><a href="/artists" className="text-gray-500 hover:text-gray-900">Artists</a></li>
         <li><a href="/about" className="text-gray-500 hover:text-gray-900">About</a></li>
+        <li><a href="/profile" className="text-gray-500 hover:text-gray-900">Profile</a></li>
       </ul>
 
       <div>
